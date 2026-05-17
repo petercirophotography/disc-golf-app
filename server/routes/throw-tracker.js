@@ -40,7 +40,7 @@ router.post('/discs', async (req, res) => {
       `INSERT INTO discs (name, disc_type, stability, brand, speed, glide, turn, fade, in_bag)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [name, disc_type, stability || 'ST', brand || null, speed || null, glide || null, turn || null, fade || null, in_bag !== undefined ? in_bag : true]
+      [name, disc_type, stability || 'ST', brand || null, speed !== undefined && speed !== '' ? speed : null, glide !== undefined && glide !== '' ? glide : null, turn !== undefined && turn !== '' ? turn : null, fade !== undefined && fade !== '' ? fade : null, in_bag !== undefined ? in_bag : true]
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -561,7 +561,7 @@ router.post('/import', async (req, res) => {
             `INSERT INTO discs (name, disc_type, stability, brand, speed, glide, turn, fade, in_bag)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
              RETURNING id`,
-            [disc.name, disc.disc_type, disc.stability || 'ST', disc.brand || null, disc.speed || null, disc.glide || null, disc.turn || null, disc.fade || null, disc.in_bag !== undefined ? disc.in_bag : true]
+            [disc.name, disc.disc_type, disc.stability || 'ST', disc.brand || null, disc.speed !== undefined && disc.speed !== "" ? disc.speed : null, disc.glide !== undefined && disc.glide !== "" ? disc.glide : null, disc.turn !== undefined && disc.turn !== "" ? disc.turn : null, disc.fade !== undefined && disc.fade !== "" ? disc.fade : null, disc.in_bag !== undefined ? disc.in_bag : true]
           );
           discNameToId[disc.name] = result.rows[0].id;
           summary.discs_imported++;
@@ -697,7 +697,7 @@ router.post('/restore', async (req, res) => {
           `INSERT INTO discs (name, disc_type, stability, brand, speed, glide, turn, fade, in_bag)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
            RETURNING id`,
-          [disc.name, disc.disc_type, disc.stability || 'ST', disc.brand || null, disc.speed || null, disc.glide || null, disc.turn || null, disc.fade || null, disc.in_bag !== undefined ? disc.in_bag : true]
+          [disc.name, disc.disc_type, disc.stability || 'ST', disc.brand || null, disc.speed !== undefined && disc.speed !== "" ? disc.speed : null, disc.glide !== undefined && disc.glide !== "" ? disc.glide : null, disc.turn !== undefined && disc.turn !== "" ? disc.turn : null, disc.fade !== undefined && disc.fade !== "" ? disc.fade : null, disc.in_bag !== undefined ? disc.in_bag : true]
         );
         discIdMap[disc.id] = result.rows[0].id;
         summary.discs_restored++;
@@ -791,7 +791,7 @@ router.post('/sync', async (req, res) => {
               `INSERT INTO discs (name, disc_type, stability, brand, speed, glide, turn, fade, in_bag)
                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                RETURNING id`,
-              [payload.name, payload.disc_type, payload.stability || 'ST', payload.brand || null, payload.speed || null, payload.glide || null, payload.turn || null, payload.fade || null, payload.in_bag !== undefined ? payload.in_bag : true]
+              [payload.name, payload.disc_type, payload.stability || 'ST', payload.brand || null, payload.speed !== undefined && payload.speed !== "" ? payload.speed : null, payload.glide !== undefined && payload.glide !== "" ? payload.glide : null, payload.turn !== undefined && payload.turn !== "" ? payload.turn : null, payload.fade !== undefined && payload.fade !== "" ? payload.fade : null, payload.in_bag !== undefined ? payload.in_bag : true]
             );
             results.push({ success: true, entity_id, server_id: result.rows[0].id });
             break;
