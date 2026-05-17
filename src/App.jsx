@@ -74,7 +74,24 @@ function App() {
   }, []);
 
   if (!user) {
-    return <Auth onLogin={handleLogin} />;
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/tracker" element={<TrackerLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="sessions" element={<Sessions />} />
+            <Route path="sessions/:id" element={<SessionDetail />} />
+            <Route path="putting" element={<PuttingSessions />} />
+            <Route path="putting/:id" element={<PuttingDetail />} />
+            <Route path="discs" element={<Discs />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="import" element={<Import />} />
+            <Route path="export" element={<Export />} />
+          </Route>
+          <Route path="*" element={<Auth onLogin={handleLogin} />} />
+        </Routes>
+      </BrowserRouter>
+    );
   }
 
   return (

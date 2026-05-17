@@ -80,7 +80,18 @@
     gap: 0.25rem;
   }
   .logo {
-    display: none;
+    transform: scale(0.6);
+    transform-origin: left center;
+  }
+  .logo-title {
+    font-size: 1.2rem;
+  }
+  .logo-subtitle {
+    font-size: 0.7rem;
+  }
+  .basket-icon {
+    width: 40px;
+    height: 40px;
   }
   .nav-menu {
     order: 2;
