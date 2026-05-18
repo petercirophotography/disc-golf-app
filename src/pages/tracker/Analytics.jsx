@@ -34,7 +34,8 @@ function Analytics() {
   const [allThrows, setAllThrows] = useState([]);
   const [allPutts, setAllPutts] = useState([]);
   const [loadingExtra, setLoadingExtra] = useState(true);
-  const [trendFilter, setTrendFilter] = useState('all'); // 'all', 'Driver', 'Fairway', 'Midrange', 'Putter', 'VOS', 'OS', 'ST', 'US', 'VUS'
+  const [trendFilter, setTrendFilter] = useState('all');
+  const [rankingSort, setRankingSort] = useState('avg'); // 'avg' or 'max'
 
   const { data: discs, loading: discsLoading } = useDiscs();
   const { data: sessions, loading: sessionsLoading } = useSessions();
@@ -223,29 +224,47 @@ function Analytics() {
             {discRankings.length === 0 ? (
               <p style={{ color: '#888' }}>No ranking data available.</p>
             ) : (
-              <div className="analytics-table-wrap">
-                <table className="analytics-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Disc</th>
-                      <th>Type</th>
-                      <th>Avg (ft)</th>
-                      <th>Throws</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {discRankings.map((d, i) => (
-                      <tr key={d.disc_id}>
-                        <td>{i + 1}</td>
-                        <td>{d.disc_name}</td>
-                        <td>{d.disc_type}</td>
-                        <td>{Math.round(d.average_feet)}</td>
-                        <td>{d.throw_count}</td>
+              <div>
+                <div style={{ marginBottom: '8px', fontSize: '12px', color: '#888' }}>
+                  Sorted by: <strong>{rankingSort === 'avg' ? 'Average' : 'Max'}</strong>
+                  {rankingSort !== 'avg' && (
+                    <button onClick={() => setRankingSort('avg')} style={{ marginLeft: '8px', fontSize: '12px', color: '#2563eb', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
+                      Reset to Avg
+                    </button>
+                  )}
+                </div>
+                <div className="analytics-table-wrap">
+                  <table className="analytics-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Disc</th>
+                        <th>Type</th>
+                        <th onClick={() => setRankingSort('avg')} style={{ cursor: 'pointer', color: rankingSort === 'avg' ? '#2563eb' : undefined }}>
+                          Avg{rankingSort === 'avg' ? ' ▼' : ''}
+                        </th>
+                        <th onClick={() => setRankingSort('max')} style={{ cursor: 'pointer', color: rankingSort === 'max' ? '#2563eb' : undefined }}>
+                          Max{rankingSort === 'max' ? ' ▼' : ''}
+                        </th>
+                        <th>Throws</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {[...discRankings]
+                        .sort((a, b) => rankingSort === 'max' ? b.max_feet - a.max_feet : b.average_feet - a.average_feet)
+                        .map((d, i) => (
+                          <tr key={d.disc_id}>
+                            <td>{i + 1}</td>
+                            <td>{d.disc_name}</td>
+                            <td>{d.disc_type}</td>
+                            <td>{Math.round(d.average_feet)}</td>
+                            <td>{Math.round(d.max_feet)}</td>
+                            <td>{d.throw_count}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>

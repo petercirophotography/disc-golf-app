@@ -230,12 +230,14 @@ export function computeDiscRankings(throws, discs) {
     const disc = discMap.get(discId);
     const distances = groupThrows.map((t) => getDistanceFeet(t));
     const avgFeet = distances.reduce((sum, d) => sum + d, 0) / distances.length;
+    const maxFeet = Math.max(...distances);
     results.push({
       disc_id: discId,
       disc_name: disc ? disc.name : 'Unknown',
       disc_type: disc ? disc.disc_type : 'Unknown',
       stability: disc ? disc.stability : 'Unknown',
       average_feet: avgFeet,
+      max_feet: maxFeet,
       throw_count: groupThrows.length,
     });
   }
