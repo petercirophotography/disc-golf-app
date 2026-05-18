@@ -204,7 +204,7 @@ function SessionDetail() {
                       <button
                         type="button"
                         onClick={() => handleDeleteThrow(t)}
-                        style={{ marginLeft: '6px', fontSize: '10px', background: 'none', border: 'none', cursor: 'pointer', color: '#999' }}
+                        style={{ marginLeft: '6px', fontSize: '16px', background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: '4px 8px', minWidth: '30px', minHeight: '30px' }}
                       >
                         ×
                       </button>
