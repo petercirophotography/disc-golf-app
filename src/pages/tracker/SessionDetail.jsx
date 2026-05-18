@@ -178,10 +178,13 @@ function SessionDetail() {
                     <div
                       key={t.id}
                       style={{
-                        padding: '6px 10px',
+                        padding: '6px 8px',
                         background: t.flag ? '#fef3c7' : '#f3f4f6',
                         borderRadius: '8px',
                         fontSize: '13px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
                       }}
                     >
                       {editingThrow === t.id ? (
@@ -204,7 +207,7 @@ function SessionDetail() {
                       <button
                         type="button"
                         onClick={() => handleDeleteThrow(t)}
-                        style={{ marginLeft: '6px', fontSize: '16px', background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: '4px 8px', minWidth: '30px', minHeight: '30px' }}
+                        style={{ fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: '2px 4px', lineHeight: 1 }}
                       >
                         ×
                       </button>
