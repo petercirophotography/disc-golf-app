@@ -35,9 +35,9 @@ function SessionDetail() {
 
   const handleSaveThrows = async (throwsData) => {
     await createThrows(id, throwsData);
-    setShowAddThrows(false);
-    setSelectedDiscId('');
+    setSelectedDiscId(''); // Reset disc selection so user can pick next disc
     refetch();
+    // Keep showAddThrows = true so user can immediately add next disc
   };
 
   const handleToggleFlag = async (throwItem, flag) => {
@@ -62,6 +62,9 @@ function SessionDetail() {
   };
 
   const selectedDisc = inBagDiscs.find((d) => d.id === selectedDiscId);
+  const existingThrowsForDisc = selectedDiscId
+    ? (throws || []).filter((t) => t.disc_id === selectedDiscId).sort((a, b) => a.throw_number - b.throw_number)
+    : [];
 
   return (
     <div>
@@ -69,9 +72,80 @@ function SessionDetail() {
 
       <div className="tracker-page-header">
         <h1>Session Detail</h1>
+        {!showAddThrows && (
+          <button
+            type="button"
+            className="tracker-btn tracker-btn-primary"
+            onClick={() => setShowAddThrows(true)}
+          >
+            + Add Throw
+          </button>
+        )}
       </div>
 
-      {/* Throws grouped by disc — sorted by longest throw descending */}
+      {/* Add throws section - AT THE TOP */}
+      {showAddThrows && (
+        <div style={{ marginBottom: '16px', background: '#f0f7ff', padding: '12px', borderRadius: '12px' }}>
+          <div className="tracker-form-group" style={{ marginBottom: '8px' }}>
+            <label>Select Disc</label>
+            <select
+              value={selectedDiscId}
+              onChange={(e) => setSelectedDiscId(e.target.value)}
+              style={{ minHeight: '44px', padding: '10px 12px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '16px', width: '100%' }}
+            >
+              <option value="">Choose a disc...</option>
+              {['VOS', 'OS', 'ST', 'US', 'VUS'].map((stab) => {
+                const group = inBagDiscs
+                  .filter((d) => d.stability === stab && d.disc_type !== 'Putter')
+                  .sort((a, b) => (b.speed || 0) - (a.speed || 0));
+                if (group.length === 0) return null;
+                return (
+                  <optgroup key={stab} label={stab}>
+                    {group.map((d) => (
+                      <option key={d.id} value={d.id}>{d.name} ({d.disc_type} · {d.speed || '?'})</option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+              {inBagDiscs.filter((d) => d.disc_type === 'Putter').length > 0 && (
+                <optgroup label="Putters">
+                  {inBagDiscs
+                    .filter((d) => d.disc_type === 'Putter')
+                    .sort((a, b) => (b.speed || 0) - (a.speed || 0))
+                    .map((d) => (
+                      <option key={d.id} value={d.id}>{d.name} ({d.speed || '?'})</option>
+                    ))}
+                </optgroup>
+              )}
+            </select>
+          </div>
+
+          {selectedDisc && (
+            <ThrowEntry
+              disc={selectedDisc}
+              existingThrows={existingThrowsForDisc}
+              onSave={(throwsData) => {
+                handleSaveThrows(throwsData);
+              }}
+            />
+          )}
+
+          <button
+            type="button"
+            className="tracker-btn tracker-btn-secondary"
+            style={{ width: '100%', marginTop: '8px' }}
+            onClick={() => { setShowAddThrows(false); setSelectedDiscId(''); }}
+          >
+            Done Adding
+          </button>
+        </div>
+      )}
+        <h1>Session Detail</h1>
+      </div>
+
+      {/* Add throws section - at top for easy mobile access */}
+      {showAddThrows ? (
+        <div style={{ marginBottom: '16px' }}>
       {Object.keys(throwsByDisc).length === 0 && !showAddThrows ? (
         <div className="tracker-empty">
           <p>No throws recorded yet</p>
@@ -239,12 +313,14 @@ function SessionDetail() {
         <button
           type="button"
           className="tracker-btn tracker-btn-primary"
-          style={{ width: '100%', marginTop: '16px' }}
+          style={{ width: '100%', marginBottom: '16px' }}
           onClick={() => setShowAddThrows(true)}
         >
           + Add Throws
         </button>
       )}
+
+      {/* Throws grouped by disc — sorted by highest average */}
     </div>
   );
 }
