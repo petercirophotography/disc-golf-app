@@ -246,7 +246,7 @@ function Analytics() {
                         <th onClick={() => setRankingSort('max')} style={{ cursor: 'pointer', color: rankingSort === 'max' ? '#2563eb' : undefined }}>
                           Max{rankingSort === 'max' ? ' ▼' : ''}
                         </th>
-                        <th>Throws</th>
+                        <th>N</th>
                       </tr>
                     </thead>
                     <tbody>
